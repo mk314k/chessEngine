@@ -1,69 +1,109 @@
-from utility import BOARD_SIZE, COLOR, WHITE, BLACK
+"""
+_summary_
+
+Returns:
+    _type_: _description_
+"""
+BOARD_SIZE = 8
+
+class Color:
+    """
+    _summary_
+    """
+    def __init__(self, value = "black"):
+        self.value = value
+    def flip(self):
+        if self.value == 'black':
+            return Color('white')
+        else:
+            return Color('black')
+    def __repr__(self):
+        return self.value
+
+BLACK = Color()
+WHITE = BLACK.flip()
+
 
 class ChessPiece():
-    def __init__(self,colr,repr='E') -> None:
+    """
+    _summary_
+    """
+    def __init__(self,colr:Color, *args, **kwargs) -> None:
         self.__colr = colr
-        self.__repr = repr
     def __repr__(self) -> str:
-        return f'{self.__repr}{self.__colr}'
+        return f'{self.__colr} {self.__class__.__name__}'
     def __str__(self) -> str:
         return self.__repr__()
     
+# class Blank(Chess_Piece):
+#     def __init__(self, *args, **kwargs) -> None:
+#         super().__init__()
 
 class Rook(ChessPiece):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(repr='R', *args, **kwargs)
+    """
+    _summary_
+
+    Args:
+        Chess_Piece (_type_): _description_
+    """
+    def __init__(self, colr:Color, *args, **kwargs) -> None:
+        super().__init__(colr, *args, **kwargs)
+
 
 class Bishop(ChessPiece):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(repr='B', *args, **kwargs)
+    def __init__(self, colr,  *args, **kwargs) -> None:
+        super().__init__(colr, *args, **kwargs)
 
 class King(ChessPiece):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(repr='K', *args, **kwargs)
+    def __init__(self,colr, *args, **kwargs) -> None:
+        super().__init__(colr, *args, **kwargs)
 
 class Queen(ChessPiece):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(repr='Q', *args, **kwargs)
+    def __init__(self, colr, *args, **kwargs) -> None:
+        super().__init__(colr, *args, **kwargs)
 
 class Knight(ChessPiece):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(repr='N', *args, **kwargs)
+    def __init__(self,colr, *args, **kwargs) -> None:
+        super().__init__(colr, *args, **kwargs)
 
 class Pawn(ChessPiece):
+    """
+    _summary_
+
+    Args:
+        ChessPiece (_type_): _description_
+    """
     def __init__(self, *args, **kwargs) -> None:
-        super().__init__(repr='P', *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__doubleStepForward = True
+    def possible_moves(self):
+        """
 
-class ChessCell():
-    def __init__(self, colr:COLOR, piece:ChessPiece|None = None) -> None:
-        self.bgColr = colr
-        self.piece = piece
-        pass
+        Returns:
+            _type_: _description_
+        """
 
 
-class ChessBoard():
+class ChessBoard:
+    """
+    _summary_
+    """
     def __init__(self) -> None:
-        self.__board = [None]*BOARD_SIZE**2
-        for i in range(0,BOARD_SIZE**2):
-            self.__board[i] = ChessCell((i+i//8)%2)
+        self.__board = {}
+        self.__board[0] = self.__board[7] = Rook(BLACK)
+        self.__board[1] = self.__board[6] = Knight(BLACK)
+        self.__board[2] = self.__board[5] = Bishop(BLACK)
+        self.__board[3] = Queen(BLACK)
+        self.__board[4] = King(BLACK)
+        self.__board[56] = self.__board[63] = Rook(WHITE)
+        self.__board[57] = self.__board[62] = Knight(WHITE)
+        self.__board[58] = self.__board[61] = Bishop(WHITE)
+        self.__board[59] = Queen(WHITE)
+        self.__board[60] = King(WHITE)
 
-
-    def startGame(self):
-        self.__board[0].piece = self.__board[7].piece = Rook(BLACK)
-        self.__board[1].piece = self.__board[6].piece = Knight(BLACK)
-        self.__board[2].piece = self.__board[5].piece = Bishop(BLACK)
-        self.__board[3].piece = Queen(BLACK)
-        self.__board[4].piece = King(BLACK)
-        self.__board[56].piece = self.__board[63].piece = Rook(WHITE)
-        self.__board[57].piece = self.__board[62].piece = Knight(WHITE)
-        self.__board[58].piece = self.__board[61].piece = Bishop(WHITE)
-        self.__board[59].piece = Queen(WHITE)
-        self.__board[60].piece = King(WHITE)
-
-        pass
+        self.__chance = WHITE
     
-    def showPath(self,index):
+    def show_path(self,index):
         """Returns all availabe path that can be taken by piece at given index
 
         Args:
@@ -73,13 +113,16 @@ class ChessBoard():
         pass
 
     def __getitem__(self, index:tuple|int):
-        if isinstance(index,int):
-            cell:ChessCell = self.__board[index]
-        else:
-            cell:ChessCell = self.__board[index[0]*8+index[1]]
-        return (cell.bgColr,cell.piece)
+        if isinstance(index, tuple):
+            index = index[0] * 8 + index[1]
+        if index in self.__board:
+            return self.__board[index]
+        elif 0<=index<=63:
+            return None
+        raise KeyError
 
     def __str__(self) -> str:
-        pass
+        res = [f'{[self[i, j] for j in range(BOARD_SIZE)]}' for i in range(BOARD_SIZE)]
+        return '\n'.join(res)
 
 

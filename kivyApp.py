@@ -1,3 +1,6 @@
+"""
+_summary_
+"""
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
@@ -21,9 +24,11 @@ class mainGrid(GridLayout):
         for i in range(64):
             button = KButton(id=i)
             button.bind(on_press=self.handleClick)
-            if board[i][1]:
-                button.background_normal =str(board[i][1])+'.png'
             button.background_color = BUTTON_COLOR[board[i][0]]
+            if board[i][1]:
+                button.background_normal ='img/' + str(board[i][1])+'.png'
+                button.background_down = 'img/' +str(board[i][1])+'.png'
+                button.background_color = (0,0.6,0.8,1)
             self.add_widget(button)
 
     def handleClick(self,instance:KButton):

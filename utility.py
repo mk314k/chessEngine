@@ -10,3 +10,5 @@ BUTTON_COLOR = np.array([[1,1,1,1],[0.4,0.4,0.4,1]])/kivy_button_default_color
 class COLOR():
     Black = BLACK
     White = WHITE
+    def flip():
+        pass
